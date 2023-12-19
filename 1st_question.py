@@ -92,7 +92,7 @@ def u(x,t):  # Calculates the u(x,t) from the espectral form at x and t
 
 
 for i in range(np.shape(x_linspace)[0]): # Calculates the u(x,t) along the x axis at x
-    u_x_t[i] = u(x_linspace[i],2/c_0) # m/c_0 gives the time need for the wave displace m meters
+    u_x_t[i] = u(x_linspace[i],2/c_0) # m/c_0 gives the time needed for the wave displace m meters
 
 # Plots the wave recovered
 

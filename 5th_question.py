@@ -62,7 +62,7 @@ def A_hat(x,t): # Generates the original incident sign
     else:
         return 0
     
-x_linspace = np.linspace(-1, 13, 600) # Point over the x axis to calculate u(x,t)
+x_linspace = np.linspace(-1, 12, 600) # Point over the x axis to calculate u(x,t)
 
 u_x_t = np.zeros(np.shape(x_linspace)[0]) # prealocates the u(x,t) vector
 
@@ -88,7 +88,7 @@ def u_t(x,t): # Calculates the u_reflexion(x,t) from the espectral form at x and
 
     return u
 
-for j in range(10):
+for j in range(12):
     for i in range(np.shape(x_linspace)[0]): # Calculates the u(x,t) along the x axis at x
         u_x_t[i] = u_t(x_linspace[i], j/c_0) # m/c_0 gives the time need for the wave displace m meters
 
@@ -96,9 +96,9 @@ for j in range(10):
 
     plt.figure('Wave propagation')
     plt.plot(x_linspace, u_x_t)
-    plt.axvline(x = 5, label = 'mass', linestyle = 'dashed', color = 'g')
+    plt.axhline(y = 1, label = 'Original amplitude', linestyle = 'dashed', color = 'g')
     plt.xlabel('x')
     plt.ylabel('u(x,t)')
-    plt.ylim(-2,2)
+    plt.ylim(0,1.5)
     plt.legend()
     plt.show()

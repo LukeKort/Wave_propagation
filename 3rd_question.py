@@ -98,7 +98,7 @@ def u_r(x,t): # Calculates the u_reflexion(x,t) from the espectral form at x and
 
 for j in range(10):
     for i in range(np.shape(x_linspace)[0]): # Calculates the u(x,t) along the x axis at x
-        u_x_t[i] = u_i(x_linspace[i], j/c_0) + u_r(x_linspace[i], j/c_0) # m/c_0 gives the time need for the wave displace m meters
+        u_x_t[i] = u_i(x_linspace[i], j/c_0) + u_r(x_linspace[i], j/c_0) # m/c_0 gives the time needed for the wave displace m meters
 
     # Plots the wave recovered
 
