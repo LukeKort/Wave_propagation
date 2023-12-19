@@ -11,11 +11,17 @@ N = 10 # Number of discratization points
 
 A = 1 # Maxium amplitude
 
-a = -2 # Sign limits
+bar_len = 5 # Bar lengtg
+
+M = 500 # Mass at the end of the bar
+
+Area = np.pi*(0.0127**2)
+
+a = -1 # Sign limits
 b = 0
 c = 1
 
-x_disc = np.linspace(-2,1,N) # Sign limits
+x_disc = np.linspace(-2,1,N) # Discretizes the sign along the y axis
 
 y_disc = np.piecewise(x_disc,
                       [x_disc < a, 
@@ -39,46 +45,68 @@ from scipy.fft import fft, fftfreq, ifft
 yf = fft(y_disc) # Calculates the amplitudes
 xf = fftfreq(N) # Calculates the frequencies associated to the amplitudes above
 
-# Calculate the wave propagation
+recoverd_sign = ifft(yf) # Recuperates the original sign from the FFT frequencies
 
-A = 0
-B = 0
+k = 2*np.pi*xf # Wave number
 
-for i in range(N):
-    if xf[i] >= 0:
-        A =+ yf[i]
+omega = c_0*k # Wave circular frequency
+
+def A_hat(x,t): # Generates the original incident sign
+    x = x - c_0*t
+    if (x >= -1) and (x <= 0):
+        return A*(x + 1)
+    if (x > 0) and (x <= 1):
+        return A*(-x + 1)
     else:
-        B =+ yf[i]
+        return 0
+    
+def mirror_A_hat(x,t): # Generates the original incident sign
+    x = x + c_0*t
 
+    if (x >= (-1 + 2*bar_len)) and ( x <= (0 + 2*bar_len)):
+        return A*(x + 1 - 2*bar_len)
+    if (x > (0 + 2*bar_len)) and (x <= (1 + 2*bar_len)):
+        return A*(-x + 1 + 2*bar_len)
+    else:
+        return 0
 
-omega = 2*np.pi*xf
+x_linspace = np.linspace(-1, 13, 600) # Point over the x axis to calculate u(x,t)
 
-k = omega/c_0
+u_x_t = np.zeros(np.shape(x_linspace)[0]) # prealocates the u(x,t) vector
 
-x_linspace = np.linspace(-100, 100, 100000)
-
-u_x_t = np.zeros(np.shape(x_linspace)[0])
-
-def u(x,t):
+def u_i(x,t): # Calculates the u_incident(x,t) from the espectral form at x and t
     u = 0
 
-    i = int(N/2)
+    Amp = A_hat(x,t)
 
-    for n in range(i):
-        u =+ np.abs(B*np.exp(-1j*(np.abs(k[n+5])*x + np.abs(omega[n+5])*t)))
+    for n in range(N):
+        u =+ Amp*np.exp(-1j*(k[n]*x - omega[n]*t))
 
     return u
 
-print(omega[5:10])
-print(u(0,0))
-print(u(0,0.0001))
-print(u(0,0.0002))
-print(u(0,0.0003))
-print(u(0,0.0004))
+def u_r(x,t): # Calculates the u_reflexion(x,t) from the espectral form at x and t\
 
-for i in range(np.shape(x_linspace)[0]):
-    u_x_t[i] = u(x_linspace[i],0)
+    u = 0
 
-plt.figure('Wave propagation')
-plt.plot(x_linspace, u_x_t)
-plt.show()
+    Amp_B = A_hat(x - 2*bar_len,-t)
+
+    for n in range(1,N):
+               
+        u =+ Amp_B*((1j*k[n]*Area*E - M*omega[n]**2)/(1j*k[n]*Area*E + M*omega[n]**2))*np.exp(1j*(k[n]*x + omega[n]*t))
+
+    return u
+
+for j in range(10):
+    for i in range(np.shape(x_linspace)[0]): # Calculates the u(x,t) along the x axis at x
+        u_x_t[i] = u_i(x_linspace[i], j/c_0) + u_r(x_linspace[i], j/c_0) # m/c_0 gives the time need for the wave displace m meters
+
+    # Plots the wave recovered
+
+    plt.figure('Wave propagation')
+    plt.plot(x_linspace, u_x_t)
+    plt.axvline(x = 5, label = 'mass', linestyle = 'dashed', color = 'g')
+    plt.xlabel('x')
+    plt.ylabel('u(x,t)')
+    plt.ylim(-2,2)
+    plt.legend()
+    plt.show()
