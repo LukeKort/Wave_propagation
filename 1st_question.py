@@ -7,7 +7,7 @@ rho = 7850  # Bar's density
 E = 210e9 # Bar's Young Modulos
 c_0 = np.sqrt(E/rho) # Bar's propagation velocity
 
-N = 1000 # Number of discratization points
+N = 10 # Number of discratization points
 
 A = 1 # Maxium amplitude
 
@@ -39,7 +39,9 @@ from scipy.fft import fft, fftfreq, ifft
 yf = fft(y_disc) # Calculates the amplitudes
 xf = fftfreq(N) # Calculates the frequencies associated to the amplitudes above
 
-plt.figure('Frequency domain')
+title = str('Frequency domain - N = %i' %N)
+plt.figure(title)
+plt.title(title)
 plt.scatter(xf, np.abs(yf))
 plt.xlabel('Número de onda')
 plt.ylabel('Amplitude')
@@ -49,7 +51,9 @@ plt.legend()
 
 recoverd_sign = ifft(yf) # Recuperates the original sign from the FFT frequencies
 
-plt.figure('Original and Recovered Sign')
+title = str('Original and Recovered Sign - N = %i' %N)
+plt.figure(title)
+plt.title(title)
 plt.plot(x_disc, y_disc, label = 'Original Sign', linestyle = '-') # Original Sign
 plt.plot(x_disc, recoverd_sign, label = 'Recovered sign', linestyle = 'dotted') # Recovered sign
 plt.xlabel('x')
@@ -90,14 +94,16 @@ def u(x,t):  # Calculates the u(x,t) from the espectral form at x and t
 
     return u
 
+for j in range(5):
+    for i in range(np.shape(x_linspace)[0]): # Calculates the u(x,t) along the x axis at x
+        u_x_t[i] = u(x_linspace[i],j/c_0) # m/c_0 gives the time needed for the wave displace m meters
 
-for i in range(np.shape(x_linspace)[0]): # Calculates the u(x,t) along the x axis at x
-    u_x_t[i] = u(x_linspace[i],2/c_0) # m/c_0 gives the time needed for the wave displace m meters
+    # Plots the wave recovered
 
-# Plots the wave recovered
-
-plt.figure('Wave propagation')
-plt.plot(x_linspace, u_x_t)
-plt.xlabel('x')
-plt.ylabel('u(x,t)')
-plt.show()
+    title = str('Wave propagation - N = %i T= %.4f s' %(N,j/c_0))
+    plt.figure(title)
+    plt.title(title)
+    plt.plot(x_linspace, u_x_t)
+    plt.xlabel('x')
+    plt.ylabel('u(x,t)')
+    plt.show()

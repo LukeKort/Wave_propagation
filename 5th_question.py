@@ -7,7 +7,7 @@ rho = 7850  # Bar's density
 E = 210e9 # Bar's Young Modulos
 c_0 = np.sqrt(E/rho) # Bar's propagation velocity
 
-gamma = 0.01*E
+gamma = 2*E
 
 N = 10 # Number of discratization points
 
@@ -94,9 +94,11 @@ for j in range(12):
 
     # Plots the wave recovered
 
-    plt.figure('Wave propagation')
+    title = str('Wave propagation - T = %.4f' %(j/c_0))
+    plt.figure(title)
     plt.plot(x_linspace, u_x_t)
     plt.axhline(y = 1, label = 'Original amplitude', linestyle = 'dashed', color = 'g')
+    plt.title(title)
     plt.xlabel('x')
     plt.ylabel('u(x,t)')
     plt.ylim(0,1.5)

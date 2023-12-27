@@ -7,13 +7,13 @@ rho = 7850  # Bar's density
 E = 210e9 # Bar's Young Modulos
 c_0 = np.sqrt(E/rho) # Bar's propagation velocity
 
-N = 10 # Number of discratization points
+N = 1000 # Number of discratization points
 
 A = 1 # Maxium amplitude
 
 bar_len = 5 # Bar lengtg
 
-M = 500 # Mass at the end of the bar
+M = 250 # Mass at the end of the bar
 
 Area = np.pi*(0.0127**2)
 
@@ -70,9 +70,9 @@ def mirror_A_hat(x,t): # Generates the original incident sign
     else:
         return 0
 
-x_linspace = np.linspace(-1, 13, 600) # Point over the x axis to calculate u(x,t)
+x_linspace = np.linspace(-1, 5, 300) # Point over the x axis to calculate u(x,t)
 
-u_x_t = np.zeros(np.shape(x_linspace)[0]) # prealocates the u(x,t) vector
+u_x_t = np.zeros(np.shape(x_linspace)[0]) # prealocates the incident u(x,t) vector
 
 def u_i(x,t): # Calculates the u_incident(x,t) from the espectral form at x and t
     u = 0
@@ -92,7 +92,7 @@ def u_r(x,t): # Calculates the u_reflexion(x,t) from the espectral form at x and
 
     for n in range(1,N):
                
-        u =+ Amp_B*((1j*k[n]*Area*E - M*omega[n]**2)/(1j*k[n]*Area*E + M*omega[n]**2))*np.exp(1j*(k[n]*x + omega[n]*t))
+        u =+ Amp_B*((1j*k[n]*Area*E - M*omega[n]**2)/(1j*k[n]*Area*E + M*omega[n]**2))*np.exp(+1j*(k[n]*x + omega[n]*t))
 
     return u
 
@@ -102,8 +102,10 @@ for j in range(10):
 
     # Plots the wave recovered
 
-    plt.figure('Wave propagation')
-    plt.plot(x_linspace, u_x_t)
+    title = str('Wave propagation - M = %i kg T = %.4f s' %(M,j/c_0))
+    plt.figure(title)
+    plt.title(title)
+    plt.plot(x_linspace, u_x_t, color = 'blue')
     plt.axvline(x = 5, label = 'mass', linestyle = 'dashed', color = 'g')
     plt.xlabel('x')
     plt.ylabel('u(x,t)')
